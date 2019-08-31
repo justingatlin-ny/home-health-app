@@ -1,8 +1,9 @@
 const dotenv = require("dotenv");
 const path = require("path");
 const webpack = require("webpack");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const envFile = path.resolve(__dirname, `.env.${process.env.NODE_ENV}`);
+const envFile = path.resolve(__dirname, `.env.${process.env.NODE_ENV}`).trim();
 
 const dotenvConfig = {
   path: envFile,
@@ -37,10 +38,18 @@ module.exports = {
   resolve: { extensions: ["*", ".js", ".jsx"] },
   output: {
     path: path.resolve(__dirname, "build/public"),
-    publicPath: "/build/public",
+    publicPath: "./",
     filename: "bundle.js"
   },
   stats: "errors-only",
-  devtool: isDevelopment ? "source-map" : "",
-  plugins: [new webpack.HotModuleReplacementPlugin()]
+  devtool: isDevelopment ? "inline-source-map" : "",
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      hash: true,
+      title: "Upload Documents",
+      template: "./src/index.html",
+      filename: "./index.html" //relative to root of the application
+    })
+  ]
 };

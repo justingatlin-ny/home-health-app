@@ -1,7 +1,12 @@
+import path from "path";
 import express from "express";
 const app = express();
 const port = 3000;
 
-app.get("/", (req, res) => res.send("Goodbye, world!"));
+app.use(express.static(path.resolve("build", "public")));
+
+app.use("*", (req, res) => {
+  res.sendStatus(404);
+});
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

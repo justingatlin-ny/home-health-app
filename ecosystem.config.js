@@ -8,7 +8,7 @@ module.exports = {
       log_file: "/dev/null",
       instances: 1,
       autorestart: true,
-      watch: "src",
+      watch: ["src"],
       max_memory_restart: "1G",
       env: {
         NODE_ENV: "development"
@@ -27,7 +27,7 @@ module.exports = {
       log_file: "/dev/null",
       instances: 1,
       autorestart: true,
-      watch: "build",
+      watch: ["build/"],
       max_memory_restart: "1G",
       env: {
         NODE_ENV: "development"

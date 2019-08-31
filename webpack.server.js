@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const webpack = require("webpack");
 
-const envFile = path.resolve(__dirname, `.env.${process.env.NODE_ENV}`);
+const envFile = path.resolve(__dirname, `.env.${process.env.NODE_ENV}`).trim();
 
 const dotenvConfig = {
   path: envFile,
