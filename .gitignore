@@ -1,0 +1,6 @@
+node_modules/
+.env*
+logs/
+build/
+public/
+aws-config.js
