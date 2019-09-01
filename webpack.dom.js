@@ -17,7 +17,7 @@ if (dotenvResult.error) throw dotenvResult.error;
 const isDevelopment = process.env.NODE_ENV === "development";
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: ["@babel/polyfill", "./src/index.js"],
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   target: "web",

@@ -21,7 +21,7 @@ module.exports = {
   watchOptions: {
     ignored: ["node_modules"]
   },
-  entry: "./server/index.js",
+  entry: ["@babel/polyfill", "./server/index.js"],
   output: {
     path: path.resolve(__dirname, "build/"),
     publicPath: "/build/public",
