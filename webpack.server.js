@@ -15,11 +15,13 @@ if (dotenvResult.error) throw dotenvResult.error;
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+// console.log("server isDevelopment: ", isDevelopment);
+
 module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules"]
+    ignored: ["node_modules", "build", "logs", "src"]
   },
   entry: ["@babel/polyfill", "./server/index.js"],
   output: {

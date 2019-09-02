@@ -40,7 +40,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>Collect Documents...</h1>
+        <h1>Upload Documents</h1>
         <form
           name="upload"
           onSubmit={this.handleSubmit}

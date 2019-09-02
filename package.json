@@ -8,10 +8,14 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "SET NODE_ENV=development && webpack --config webpack.dom.js --mode development",
-    "poststart": "SET NODE_ENV=development && webpack --config webpack.server.js --mode development",
+    "start": "NODE_ENV=development concurrently \"webpack --config webpack.dom.js --mode development\" \"webpack --config webpack.server.js --development\"",
+    "server": "pm2 start --only server --no-daemon",
     "delete": "pm2 delete server",
-    "flush": "pm2 flush"
+    "stop": "pm2 stop server",
+    "clean": "rm -rf build",
+    "clear:uploads": "rm -r uploads/*",
+    "flush": "pm2 flush",
+    "logs": "pm2 logs server"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
@@ -20,6 +24,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.6",
+    "concurrently": "^4.1.2",
     "css-loader": "^3.2.0",
     "style-loader": "^1.0.0",
     "webpack": "^4.39.3",
@@ -41,6 +46,6 @@
     "react-hot-loader": "^4.12.12"
   },
   "optionalDependencies": {
-    "fsevents": "1.2.9"
+    "fsevents": "^1.0.0"
   }
 }

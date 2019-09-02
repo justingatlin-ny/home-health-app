@@ -17,7 +17,7 @@ app.use("/storage", StorageRouter);
 
 // File not found
 app.use("*", (req, res) => {
-  res.sendStatus(404);
+  res.sendStatus(200);
 });
 
 app.listen(port, () =>

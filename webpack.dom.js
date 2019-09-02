@@ -16,10 +16,15 @@ if (dotenvResult.error) throw dotenvResult.error;
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+// console.log("dom isDevelopment: ", isDevelopment);
+
 module.exports = {
   entry: ["@babel/polyfill", "./src/index.js"],
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
+  watchOptions: {
+    ignored: ["node_modules", "server", "uploads", "buiild"]
+  },
   target: "web",
   module: {
     rules: [

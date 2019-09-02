@@ -1,25 +1,6 @@
 module.exports = {
   apps: [
     {
-      name: "client",
-      script: "src/index.js",
-      error_file: "logs/err.log",
-      out_file: "logs/out.log",
-      log_file: "/dev/null",
-      instances: 1,
-      autorestart: true,
-      watch: ["src"],
-      max_memory_restart: "1G",
-      env: {
-        NODE_ENV: "development"
-      },
-      env_production: {
-        NODE_ENV: "production"
-      }
-    }
-  ],
-  apps: [
-    {
       name: "server",
       script: "build/server-bundle.js",
       error_file: "logs/err.log",
@@ -27,7 +8,8 @@ module.exports = {
       log_file: "/dev/null",
       instances: 1,
       autorestart: true,
-      watch: ["build/"],
+      watch: false,
+      ignore_watch: ["node_modules", "logs"],
       max_memory_restart: "1G",
       env: {
         NODE_ENV: "development"

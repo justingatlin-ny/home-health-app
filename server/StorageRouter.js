@@ -9,8 +9,8 @@ import aws from "aws-sdk";
 
 import aws_config from "../aws-config";
 
-const s3List = async res => {
-  try {
+const s3Manager = {
+  init: () => {
     aws.config.setPromisesDependency();
 
     aws.config.update({
@@ -19,66 +19,66 @@ const s3List = async res => {
       region: aws_config.region
     });
 
-    const s3 = new aws.S3();
+    return new aws.S3();
+  },
+  getFiles: async () => {
+    try {
+      const s3 = this.init();
 
-    const response = await s3
-      .listObjectsV2({
-        Bucket: "site-document-collection",
-        Prefix: "private-documents"
-      })
-      .promise();
-    const contentsList = response.Contents;
-    const documentsList = contentsList.reduce((acc, item) => {
-      if (!/\/$/.test(item.Key)) {
-        acc.push(item.Key);
-      }
-      return acc;
-    }, []);
+      const response = await s3
+        .listObjectsV2({
+          Bucket: "site-document-collection",
+          Prefix: "private-documents"
+        })
+        .promise();
 
-    res.status(200).send(JSON.stringify(documentsList));
-  } catch (err) {
-    console.error("aws error", err);
+      const contentsList = response.Contents;
+
+      const documentsList = contentsList.reduce((acc, item) => {
+        if (!/\/$/.test(item.Key)) {
+          acc.push(item.Key);
+        }
+        return acc;
+      }, []);
+
+      return { status: 200, result: documentsList };
+    } catch (err) {
+      return { status: 400, err };
+    }
+  },
+  upload: async uploadParams => {
+    try {
+      const s3 = this.init();
+      const result = await s3.upload(uploadParams).promise();
+      return { status: 200, result };
+    } catch (err) {
+      return { status: 500, err };
+    }
   }
 };
 
-const s3Upload = async (res, uploadParams) => {
-  try {
-    aws.config.setPromisesDependency();
-
-    aws.config.update({
-      accessKeyId: aws_config.accessKeyId,
-      secretAccessKey: aws_config.secretAccessKey,
-      region: aws_config.region
-    });
-
-    const s3 = new aws.S3();
-
-    const response = await s3.upload(uploadParams).promise();
-
-    // const contentsList = response.Contents;
-    // const documentsList = contentsList.reduce((acc, item) => {
-    //   if (!/\/$/.test(item.Key)) {
-    //     acc.push(item.Key);
-    //   }
-    //   return acc;
-    // }, []);
-
-    res.status(200).send(JSON.stringify(response));
-  } catch (err) {
-    console.error("aws error", err);
-    res.status(500).send(JSON.stringify(err));
-  }
-};
-
-StorageRouter.get("/", (req, res) => {
-  s3List(res);
+StorageRouter.get("/", async (req, res) => {
+  const result = await s3Manager.getFiles();
+  res.status(result.status).send(result.result || result.err);
 });
+
+// Example upload object
+// destination { fieldname: 'fileList',
+//   originalname: '2018-05-25_21-34-42_000.jpeg',
+//   encoding: '7bit',
+//   mimetype: 'image/jpeg' }
+// filename { fieldname: 'fileList',
+//   originalname: '2018-05-25_21-34-42_000.jpeg',
+//   encoding: '7bit',
+//   mimetype: 'image/jpeg' }
 
 const storage = multer.diskStorage({
   destination: (req, file, instructions) => {
+    // console.log("destination", file);
     instructions(null, "uploads");
   },
   filename: (req, file, instructions) => {
+    // console.log("filename", file);
     instructions(null, `${file.fieldname}-${Date.now()}`);
   }
 });
@@ -88,35 +88,35 @@ const upload = multer({ storage });
 StorageRouter.post(
   "/upload",
   upload.array("fileList", 12),
-  (req, res, next) => {
+  async (req, res, next) => {
     const { files } = req;
 
     if (!files) {
       return res.status(404).send("no files");
     }
 
-    files.forEach(file => {
+    const result = await files.reduce(async (acc, file) => {
+      // return res.status(200).send(file);
       const fileStream = fs.createReadStream(
         path.resolve("uploads", file.filename)
       );
 
       fileStream.on("error", function(err) {
         console.log("File Error", err);
-        return res.sendStatus(401);
+        return res.status(500).send(err);
       });
 
       const uploadParams = {
         Bucket: "site-document-collection",
-        Key: file.originalname,
+        Key: file.filename,
         Body: fileStream
       };
 
-      s3Upload(res, uploadParams);
-    });
+      acc.push(await s3Manager.upload(uploadParams));
+      return acc;
+    }, []);
 
-    res
-      .status(200)
-      .send(`${files.length} file${files.length === 1 ? "" : "s"} uploaded`);
+    res.status(200).send(result);
   }
 );
 
