@@ -23,7 +23,7 @@ const s3Manager = {
   },
   getFiles: async () => {
     try {
-      const s3 = this.init();
+      const s3 = s3Manager.init();
 
       const response = await s3
         .listObjectsV2({
@@ -46,12 +46,23 @@ const s3Manager = {
       return { status: 400, err };
     }
   },
-  upload: async uploadParams => {
+  upload: async uploadParamsList => {
     try {
-      const s3 = this.init();
-      const result = await s3.upload(uploadParams).promise();
-      return { status: 200, result };
+      const s3 = s3Manager.init();
+      const acc2 = [];
+      const uploadResult = await uploadParamsList.reduce(
+        async (acc, uploadParams) => {
+          const result = await s3.upload(uploadParams).promise();
+          console.info("s3Manager.upload", typeof acc, result.Key);
+          acc2.push(result);
+          return acc;
+        },
+        []
+      );
+
+      return { status: 200, acc2 };
     } catch (err) {
+      console.error("s3Manager.upload", err);
       return { status: 500, err };
     }
   }
@@ -61,16 +72,6 @@ StorageRouter.get("/", async (req, res) => {
   const result = await s3Manager.getFiles();
   res.status(result.status).send(result.result || result.err);
 });
-
-// Example upload object
-// destination { fieldname: 'fileList',
-//   originalname: '2018-05-25_21-34-42_000.jpeg',
-//   encoding: '7bit',
-//   mimetype: 'image/jpeg' }
-// filename { fieldname: 'fileList',
-//   originalname: '2018-05-25_21-34-42_000.jpeg',
-//   encoding: '7bit',
-//   mimetype: 'image/jpeg' }
 
 const storage = multer.diskStorage({
   destination: (req, file, instructions) => {
@@ -95,15 +96,14 @@ StorageRouter.post(
       return res.status(404).send("no files");
     }
 
-    const result = await files.reduce(async (acc, file) => {
-      // return res.status(200).send(file);
+    const fileStreamList = files.reduce((acc, file) => {
       const fileStream = fs.createReadStream(
         path.resolve("uploads", file.filename)
       );
 
       fileStream.on("error", function(err) {
         console.log("File Error", err);
-        return res.status(500).send(err);
+        return acc;
       });
 
       const uploadParams = {
@@ -112,9 +112,12 @@ StorageRouter.post(
         Body: fileStream
       };
 
-      acc.push(await s3Manager.upload(uploadParams));
+      acc.push(uploadParams);
+
       return acc;
     }, []);
+
+    const result = await s3Manager.upload(fileStreamList);
 
     res.status(200).send(result);
   }
