@@ -10,10 +10,12 @@
   "scripts": {
     "start": "NODE_ENV=development concurrently \"webpack --config webpack.dom.js --mode development\" \"webpack --config webpack.server.js --development\"",
     "server": "pm2 start --only server --no-daemon",
+    "webpack:dom": "NODE_ENV=development webpack --config webpack.dom.js --mode development",
+    "webpack:server": "NODE_ENV=development webpack --config webpack.server.js --development",
     "delete": "pm2 delete server",
     "stop": "pm2 stop server",
     "clean": "rm -rf build",
-    "clear:uploads": "rm -r uploads/*",
+    "clean:uploads": "rm -r uploads/*",
     "flush": "pm2 flush",
     "logs": "pm2 logs server"
   },

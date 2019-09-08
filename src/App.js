@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { hot } from "react-hot-loader";
 import GlobalStyles from './Components/GlobalStyles';
-import Form from './Form';
+import Form from './Components/Form';
 
 class App extends Component {
   constructor(props) {

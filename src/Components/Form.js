@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import DocumentContainer from "../Components/DocumentContainer";
 
 class Form extends React.Component {
     handleSubmit = event => {
@@ -45,7 +46,7 @@ class Form extends React.Component {
                 method="POST"
                 encType="multipart/form-data">
                     <legend><h1>Upload Medicaid Documents...</h1></legend>
-
+                    <DocumentContainer />
                     <input type="file" id="fileList" name="fileList" multiple></input>
                     <button>Send</button>
             </form>

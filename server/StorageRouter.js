@@ -54,13 +54,13 @@ const s3Manager = {
         async (acc, uploadParams) => {
           const result = await s3.upload(uploadParams).promise();
           console.info("s3Manager.upload", typeof acc, result.Key);
-          acc2.push(result);
+          acc2.push(result.Key);
           return acc;
         },
         []
       );
 
-      return { status: 200, acc2 };
+      return { status: 200, resultList: acc2 };
     } catch (err) {
       console.error("s3Manager.upload", err);
       return { status: 500, err };
@@ -80,7 +80,7 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, instructions) => {
     // console.log("filename", file);
-    instructions(null, `${file.fieldname}-${Date.now()}`);
+    instructions(null, `${file.originalname}-${Date.now()}`);
   }
 });
 
