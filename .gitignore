@@ -1,6 +1,5 @@
 node_modules/
 .env*
 logs/*
-public
 uploads/*
 aws-config.js
