@@ -14,7 +14,6 @@ if (dotEnvExists) {
       const lineArr = line.split('=');
       const key = lineArr[0];
       const value = lineArr[1];
-      console.log(key, value);
       process.env[key] = value;
     });
 } else {

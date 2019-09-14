@@ -1,7 +1,5 @@
 require('./utils/manageDotEnv');
 
-console.log(process.env);
-
 const path = require("path");
 const webpack = require("webpack");
 
