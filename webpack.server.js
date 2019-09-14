@@ -1,7 +1,5 @@
-require("dotenv").config({ 
-  encoding: 'utf8',
-  debug: (process.env.DOT_ENV_DEBUG==='true')
-});
+require('./utils/manageDotEnv');
+
 const path = require("path");
 const webpack = require("webpack");
 
