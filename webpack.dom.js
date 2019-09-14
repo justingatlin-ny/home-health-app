@@ -3,20 +3,15 @@ const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const envFile = path.resolve(__dirname, `.env.${process.env.NODE_ENV}`).trim();
+const isDevelopment = process.env.NODE_ENV === "development";
 
 const dotenvConfig = {
-  path: envFile,
-  debug: true
+  debug: isDevelopment
 };
 
 const dotenvResult = dotenv.config(dotenvConfig);
 
 if (dotenvResult.error) throw dotenvResult.error;
-
-const isDevelopment = process.env.NODE_ENV === "development";
-
-// console.log("dom isDevelopment: ", isDevelopment);
 
 module.exports = {
   entry: ["@babel/polyfill", "./src/index.js"],
