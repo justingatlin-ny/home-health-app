@@ -36,7 +36,7 @@ module.exports = {
     publicPath: "./",
     filename: "bundle.js"
   },
-  stats: "errors-only",
+  stats: process.env.WEBPACK_ERRORS || "errors-only",
   devtool: isDevelopment ? "inline-source-map" : "",
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

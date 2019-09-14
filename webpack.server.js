@@ -39,6 +39,6 @@ module.exports = {
 
   devtool: isDevelopment ? "source-map" : "",
   target: "node",
-  stats: "errors-only",
+  stats: process.env.WEBPACK_ERRORS || "errors-only",
   plugins: []
 };
