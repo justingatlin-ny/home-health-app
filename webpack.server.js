@@ -1,4 +1,7 @@
-require("dotenv").config();
+require("dotenv").config({ 
+  encoding: 'utf8',
+  debug: (process.env.DOT_ENV_DEBUG==='true')
+});
 const path = require("path");
 const webpack = require("webpack");
 
