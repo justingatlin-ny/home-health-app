@@ -1,6 +1,7 @@
 require("dotenv").config({ 
   encoding: 'utf8',
-  debug: (process.env.DOT_ENV_DEBUG==='true' ? process.env.DOT_ENV_DEBUG : false)});
+  debug: (process.env.DOT_ENV_DEBUG==='true')
+});
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
