@@ -4,6 +4,8 @@ const webpack = require("webpack");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+console.log('isDevelopment', isDevelopment);
+
 const dotenvConfig = {
   debug: isDevelopment
 };
