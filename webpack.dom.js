@@ -1,17 +1,9 @@
-const dotenv = require("dotenv");
+require("dotenv").config();
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const isDevelopment = process.env.NODE_ENV === "development";
-
-const dotenvConfig = {
-  debug: isDevelopment
-};
-
-const dotenvResult = dotenv.config(dotenvConfig);
-
-if (dotenvResult.error) throw dotenvResult.error;
 
 module.exports = {
   entry: ["@babel/polyfill", "./src/index.js"],

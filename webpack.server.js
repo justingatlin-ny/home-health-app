@@ -1,18 +1,8 @@
-const dotenv = require("dotenv");
+require("dotenv").config();
 const path = require("path");
 const webpack = require("webpack");
 
 const isDevelopment = process.env.NODE_ENV === "development";
-
-console.log('isDevelopment', isDevelopment);
-
-const dotenvConfig = {
-  debug: isDevelopment
-};
-
-const dotenvResult = dotenv.config(dotenvConfig);
-
-if (dotenvResult.error) throw dotenvResult.error;
 
 module.exports = {
   mode: isDevelopment ? "development" : "production",
