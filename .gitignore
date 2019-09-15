@@ -4,3 +4,4 @@ logs/*
 uploads/*
 aws-config.js
 creds/
+dev
