@@ -5,6 +5,23 @@ const GlobalStyles = createGlobalStyle`
         margin: 0;
         padding: 0;        
     }
+    label, input {
+        display: block;
+    }
+    label {
+        text-transform: capitalize;
+    }
+    fieldset {
+        label {
+            text-transform: capitalize;
+        }
+        div {
+            margin: 25px 25px 25px;
+            input {
+                margin-left: 25px;
+            }
+        }
+    }
 `;
 
 export default GlobalStyles;

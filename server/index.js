@@ -1,3 +1,4 @@
+import '../utils/manageDotEnv';
 import path from "path";
 import fs from 'fs';
 import express from "express";
@@ -48,6 +49,9 @@ const httpsServer = https.createServer(credentials, app);
 const port = process.env.PORT;
 const secureport = process.env.SECURE_PORT;
 
+console.log('process.env', process.env);
+
+if (!port || !secureport) throw `Ports missing: Secure: ${secureport} - Unsecure: ${port}`;
 
 httpServer.listen(port, () => {
 	console.log(`HTTP Server running on port: ${port}` );

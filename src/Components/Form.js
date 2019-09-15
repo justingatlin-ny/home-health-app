@@ -45,10 +45,15 @@ class Form extends React.Component {
                 onSubmit={this.handleSubmit}
                 method="POST"
                 encType="multipart/form-data">
-                    <legend><h1>Upload Medicaid Documents...</h1></legend>
-                    <DocumentContainer />
-                    <input type="file" id="fileList" name="fileList" multiple></input>
-                    <button>Send</button>
+                    <legend>
+                      <h1>Upload Medicaid Documents...</h1>
+                    </legend>
+                    
+                    <DocumentContainer handleChange={this.handleChange} />
+                    
+                    <div>
+                      <button>Send</button>
+                    </div>
             </form>
           );
       }
