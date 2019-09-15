@@ -5,19 +5,21 @@ const webpack = require("webpack");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+const buildFolder = path.resolve(__dirname, (isDevelopment ? 'dev' : 'build'));
+const publicPath = `/${buildFolder}/public"`;
+
 module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules", "build", "logs", "src"]
+    ignored: ["node_modules", "build", "logs", "src", "dev"]
   },
   entry: ["@babel/polyfill", "./server/index.js"],
   output: {
-    path: path.resolve(__dirname, "build/"),
-    publicPath: "/build/public",
+    path: buildFolder,
+    publicPath,
     filename: "server-bundle.js"
   },
-
   module: {
     rules: [
       {

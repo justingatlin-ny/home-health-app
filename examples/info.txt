@@ -1,0 +1,4 @@
+ListSail -> sudo ssh -i ./.ssh/authorized_keys/LightsailDefaultKey-us-east-1.pem ubuntu@3.90.72.99
+Bitnami -> ssh -i [your-private-key].pem bitnami@52.90.156.0
+/etc/letsencrypt/live/vikingstamp.com/fullchain.pem
+/etc/letsencrypt/live/vikingstamp.com/privkey.pem

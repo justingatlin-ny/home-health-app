@@ -8,12 +8,15 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+const buildFolder = path.resolve(__dirname, (isDevelopment ? 'dev' : 'build'), 'public');
+const publicPath = "./";
+
 module.exports = {
   entry: ["@babel/polyfill", "./src/index.js"],
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules", "server", "uploads", "buiild"]
+    ignored: ["node_modules", "server", "uploads", "build", "dev"]
   },
   target: "web",
   module: {
@@ -32,10 +35,10 @@ module.exports = {
   },
   resolve: { extensions: ["*", ".js", ".jsx"] },
   output: {
-    path: path.resolve(__dirname, "build/public"),
-    publicPath: "./",
+    path: buildFolder,
+    publicPath,
     filename: "bundle.js"
-  },
+  },  
   stats: process.env.WEBPACK_ERRORS || "errors-only",
   devtool: isDevelopment ? "inline-source-map" : "",
   plugins: [
