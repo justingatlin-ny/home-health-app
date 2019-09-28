@@ -8,7 +8,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-const buildFolder = path.resolve(__dirname, (isDevelopment ? 'dev' : 'build'), 'public');
+const buildFolder = path.resolve(__dirname, 'build');
 const publicPath = "./";
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules", "server", "uploads", "build", "dev"]
+    ignored: ["node_modules", "server", "uploads", "build"]
   },
   target: "web",
   module: {

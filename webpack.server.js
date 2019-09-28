@@ -5,14 +5,14 @@ const webpack = require("webpack");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-const buildFolder = path.resolve(__dirname, (isDevelopment ? 'dev' : 'build'));
+const buildFolder = path.resolve(__dirname, 'build');
 const publicPath = `/${buildFolder}/public"`;
 
 module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules", "build", "logs", "src", "dev"]
+    ignored: ["node_modules", "build", "logs", "src"]
   },
   entry: ["@babel/polyfill", "./server/index.js"],
   output: {
