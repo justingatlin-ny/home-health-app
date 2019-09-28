@@ -13,12 +13,11 @@ const app = express();
 import StorageRouter from "StorageRouter";
 
 const isDevelopment = (process.env.NODE_ENV === 'development');
-const folder = isDevelopment ? 'dev' : 'build';
 
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(express.static(path.resolve(folder, "public")));
+app.use(express.static(path.resolve("build", "public")));
 app.use("/storage", StorageRouter);
 
 // File not found
@@ -48,8 +47,6 @@ const httpsServer = https.createServer(credentials, app);
 
 const port = process.env.PORT;
 const secureport = process.env.SECURE_PORT;
-
-console.log('process.env', process.env);
 
 if (!port || !secureport) throw `Ports missing: Secure: ${secureport} - Unsecure: ${port}`;
 

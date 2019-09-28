@@ -8,9 +8,6 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-const buildFolder = path.resolve(__dirname, 'build');
-const publicPath = "./";
-
 module.exports = {
   entry: ["@babel/polyfill", "./src/index.js"],
   mode: isDevelopment ? "development" : "production",
@@ -35,8 +32,8 @@ module.exports = {
   },
   resolve: { extensions: ["*", ".js", ".jsx"] },
   output: {
-    path: buildFolder,
-    publicPath,
+    path: path.resolve(__dirname, 'build', 'public'),
+    publicPath: "./",
     filename: "bundle.js"
   },  
   stats: process.env.WEBPACK_ERRORS || "errors-only",

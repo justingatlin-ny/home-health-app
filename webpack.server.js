@@ -5,9 +5,6 @@ const webpack = require("webpack");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-const buildFolder = path.resolve(__dirname, 'build');
-const publicPath = `/${buildFolder}/public"`;
-
 module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
@@ -16,8 +13,8 @@ module.exports = {
   },
   entry: ["@babel/polyfill", "./server/index.js"],
   output: {
-    path: buildFolder,
-    publicPath,
+    path: path.resolve(__dirname, "build/"),
+    publicPath: "/build/public",
     filename: "server-bundle.js"
   },
   module: {
