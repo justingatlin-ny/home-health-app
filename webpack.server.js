@@ -9,12 +9,12 @@ module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules", "build", "logs", "src"]
+    ignored: ["node_modules", "htdocs", "logs", "src"]
   },
   entry: ["@babel/polyfill", "./server/index.js"],
   output: {
-    path: path.resolve(__dirname, "build/"),
-    publicPath: "/build/public",
+    path: path.resolve(__dirname, "htdocs/"),
+    publicPath: "/htdocs/public",
     filename: "server-bundle.js"
   },
   module: {

@@ -2,13 +2,13 @@ module.exports = {
   apps: [
     {
       name: "dev",
-      script: "build/server-bundle.js",
+      script: "htdocs/server-bundle.js",
       error_file: "logs/err.log",
       out_file: "logs/out.log",
       log_file: "/dev/null",
       instances: 1,
       autorestart: true,
-      watch: ["build"],
+      watch: ["htdocs"],
       max_memory_restart: "1G",
       env: {
         NODE_ENV: "development"
@@ -19,7 +19,7 @@ module.exports = {
     },
     {
       name: "prod",
-      script: "build/server-bundle.js",
+      script: "htdocs/server-bundle.js",
       error_file: "logs/err.log",
       out_file: "logs/out.log",
       log_file: "/dev/null",

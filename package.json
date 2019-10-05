@@ -17,7 +17,7 @@
     "prod:server": "NODE_ENV=production webpack --config webpack.server.js",
     "delete": "pm2 delete all",
     "stop": "pm2 stop all",
-    "clean": "rm -rf build",
+    "clean": "rm -rf htdocs",
     "clean:uploads": "rm -r uploads/*",
     "flush": "pm2 flush",
     "logs": "pm2 logs all"

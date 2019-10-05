@@ -13,7 +13,7 @@ module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules", "server", "uploads", "build"]
+    ignored: ["node_modules", "server", "uploads", "htdocs"]
   },
   target: "web",
   module: {
@@ -32,7 +32,7 @@ module.exports = {
   },
   resolve: { extensions: ["*", ".js", ".jsx"] },
   output: {
-    path: path.resolve(__dirname, 'build', 'public'),
+    path: path.resolve(__dirname, 'htdocs', 'public'),
     publicPath: "./",
     filename: "bundle.js"
   },  
