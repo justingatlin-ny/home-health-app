@@ -37,9 +37,9 @@ if (isDevelopment) {
   key = fs.readFileSync('creds/https.key', 'utf8');
   cert = fs.readFileSync('creds/https.crt', 'utf8');
 } else {
-  key = fs.readFileSync('creds/privkey.pem', 'utf8');
-  cert = fs.readFileSync('creds/cert.pem', 'utf8');
-  ca = fs.readFileSync('creds/chain.pem', 'utf8');
+  key = fs.readFileSync('/etc/letsencrypt/live/vikingstamp.com/privkey.pem', 'utf8');
+  cert = fs.readFileSync('/etc/letsencrypt/live/vikingstamp.com/cert.pem', 'utf8');
+  ca = fs.readFileSync('/etc/letsencrypt/live/vikingstamp.com/chain.pem', 'utf8');
 
   credentials.ca = ca;
 }
