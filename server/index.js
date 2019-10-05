@@ -20,6 +20,11 @@ app.use(bodyParser.json());
 app.use(express.static(path.resolve("htdocs", "public")));
 app.use("/storage", StorageRouter);
 
+app.get('/.well-known/acme-challenge/yPaavhOICdtU3td4Qo9Y2ZQDkXr_gTuF9dMfLpz-yyA', (req, res) => {
+  console.error('ok');
+  res.sendStatus(200);
+});
+
 // File not found
 app.use("*", (req, res) => {
   res.sendStatus(404);
@@ -28,22 +33,22 @@ app.use("*", (req, res) => {
 let key, cert, ca, credentials = {};
 
 // Certificate
-// if (isDevelopment) {
-//   key = fs.readFileSync('creds/https.key', 'utf8');
-//   cert = fs.readFileSync('creds/https.crt', 'utf8');
-// } else {
-//   key = fs.readFileSync('creds/privkey.pem', 'utf8');
-//   cert = fs.readFileSync('creds/cert.pem', 'utf8');
-//   ca = fs.readFileSync('creds/chain.pem', 'utf8');
+if (isDevelopment) {
+  key = fs.readFileSync('creds/https.key', 'utf8');
+  cert = fs.readFileSync('creds/https.crt', 'utf8');
+} else {
+  key = fs.readFileSync('creds/privkey.pem', 'utf8');
+  cert = fs.readFileSync('creds/cert.pem', 'utf8');
+  ca = fs.readFileSync('creds/chain.pem', 'utf8');
 
-//   credentials.ca = ca;
-// }
+  credentials.ca = ca;
+}
 
-// credentials.cert = cert;
-// credentials.key = key;
+credentials.cert = cert;
+credentials.key = key;
 
 const httpServer = http.createServer(app);
-// const httpsServer = https.createServer(credentials, app);
+const httpsServer = https.createServer(credentials, app);
 
 const port = process.env.PORT;
 const secureport = process.env.SECURE_PORT;
@@ -54,6 +59,6 @@ httpServer.listen(port, () => {
 	console.log(`HTTP Server running on port: ${port}` );
 });
 
-// httpsServer.listen(secureport, () => {
-// 	console.log(`HTTPS Server running on port: ${secureport} `);
-// });
+httpsServer.listen(secureport, () => {
+	console.log(`HTTPS Server running on port: ${secureport} `);
+});
