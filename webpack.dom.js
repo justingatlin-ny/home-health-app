@@ -1,5 +1,3 @@
-require('./utils/manageDotEnv');
-
 const fs = require('fs');
 const path = require("path");
 
@@ -45,6 +43,7 @@ module.exports = {
       title: "Upload Documents",
       template: "./src/index.html",
       filename: "./index.html" //relative to root of the application
-    })
+    }),
+    new webpack.DefinePlugin(require('./utils/manageDotEnv')())
   ]
 };

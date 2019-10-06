@@ -1,3 +1,9 @@
+import Amplify, { Auth } from '@aws-amplify/auth';
+import { withAuthenticator } from 'aws-amplify-react';
+import awsconfig from './aws-exports';
+
+Amplify.configure(awsconfig);
+
 import React, { Component } from "react";
 import { hot } from "react-hot-loader";
 import GlobalStyles from './Components/GlobalStyles';
@@ -19,4 +25,4 @@ class App extends Component {
   }
 }
 
-export default hot(module)(App);
+export default hot(module)(withAuthenticator(App));

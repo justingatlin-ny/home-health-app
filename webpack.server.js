@@ -1,5 +1,3 @@
-require('./utils/manageDotEnv');
-
 const path = require("path");
 const webpack = require("webpack");
 
@@ -39,5 +37,7 @@ module.exports = {
   devtool: isDevelopment ? "source-map" : "",
   target: "node",
   stats: process.env.WEBPACK_ERRORS || "errors-only",
-  plugins: []
+  plugins: [
+    new webpack.DefinePlugin(require('./utils/manageDotEnv')())
+  ]
 };
