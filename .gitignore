@@ -4,4 +4,4 @@ logs/*
 uploads/*
 creds/
 htdocs
-aws-exports.js
+*/aws-exports.js
