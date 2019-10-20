@@ -3,6 +3,12 @@ const webpack = require("webpack");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+// console.log(`isDevelopment: ${isDevelopment} - WEBPACK_ERRORS: ${process.env.WEBPACK_ERRORS}`);
+const envs = require('./utils/manageDotEnv')();
+const plugins = [
+  new webpack.DefinePlugin(envs)
+]
+
 module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
@@ -34,10 +40,8 @@ module.exports = {
     ]
   },
 
-  devtool: isDevelopment ? "source-map" : "",
+  devtool: "",
   target: "node",
-  stats: process.env.WEBPACK_ERRORS || "errors-only",
-  plugins: [
-    new webpack.DefinePlugin(require('./utils/manageDotEnv')())
-  ]
+  stats: "normal",
+  plugins
 };

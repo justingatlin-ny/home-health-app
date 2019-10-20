@@ -6,9 +6,11 @@ module.exports = {
       error_file: "logs/err.log",
       out_file: "logs/out.log",
       log_file: "/dev/null",
+      watch_delay: 1500,
+      // ignore_watch : ["node_modules", "conf", "logs", "examples", "package.json", "document*"],
       instances: 1,
       autorestart: true,
-      watch: ["htdocs"],
+      watch: ['htdocs'],
       max_memory_restart: "1G",
       env: {
         NODE_ENV: "development"

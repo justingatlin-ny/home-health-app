@@ -6,13 +6,15 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
+console.log(`isDevelopment: ${isDevelopment}`);
+
 module.exports = {
   entry: ["@babel/polyfill", "./src/index.js"],
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
-  watchOptions: {
-    ignored: ["node_modules", "server", "uploads", "htdocs"]
-  },
+  // watchOptions: {
+  //   ignored: ["node_modules", "server", "uploads", "htdocs"]
+  // },
   target: "web",
   module: {
     rules: [
@@ -34,16 +36,10 @@ module.exports = {
     publicPath: "./",
     filename: "bundle.js"
   },  
-  stats: process.env.WEBPACK_ERRORS || "errors-only",
-  devtool: isDevelopment ? "inline-source-map" : "",
+  stats: "normal",
+  devtool: "",
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-      hash: true,
-      title: "Upload Documents",
-      template: "./src/index.html",
-      filename: "./index.html" //relative to root of the application
-    }),
     new webpack.DefinePlugin(require('./utils/manageDotEnv')())
   ]
 };

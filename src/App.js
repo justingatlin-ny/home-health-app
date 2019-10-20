@@ -1,4 +1,4 @@
-import Amplify, { Auth } from '@aws-amplify/auth';
+import Amplify from '@aws-amplify/auth';
 import { withAuthenticator } from 'aws-amplify-react';
 import awsconfig from './aws-exports';
 

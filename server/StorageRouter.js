@@ -1,13 +1,40 @@
+import http from 'http';
 import path from "path";
 import express from "express";
 import multer from "multer";
 import fs from "fs";
+import axios from 'axios';
+import jwk from 'jsonwebtoken';
+import jwkToPem from 'jwk-to-pem';
 
 const StorageRouter = express.Router();
 
 import aws from "aws-sdk";
 
 import aws_config from "../aws-config";
+import aws_exports from '../src/aws-exports';
+
+const isValid = async (req, res, next) => {
+  const { token } = req.headers;
+  const awsKidsURL = `https://cognito-idp.${aws_config.region}.amazonaws.com/${aws_exports.Auth.userPoolId}/.well-known/jwks.json`;
+
+  try {
+    const response = await axios.get(awsKidsURL);
+    // res.status(200).send(JSON.stringify(response.data));
+      const pem = jwkToPem(jwk);
+      jwt.verify(token, pem, { algorithms: ['RS256'] }, function(err, decodedToken) {
+        if (err) return res.sendStatus(403);
+        const issuer = `https://cognito-idp.us-east-1.amazonaws.com/${aws_exports.Auth.userPoolId}`
+        res.sendStatus(201);
+      });
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(403);
+  }
+  
+}
+
+
 
 const s3Manager = {
   init: () => {
@@ -28,20 +55,25 @@ const s3Manager = {
       const response = await s3
         .listObjectsV2({
           Bucket: "site-document-collection",
-          Prefix: "private-documents"
+          Prefix: ""
         })
         .promise();
 
-      const contentsList = response.Contents;
+      const fileList = response.Contents;
 
-      const documentsList = contentsList.reduce((acc, item) => {
-        if (!/\/$/.test(item.Key)) {
-          acc.push(item.Key);
+      const vettedFilesObj = fileList.reduce((acc, file) => {
+        const key = file.Key;
+        const lastSlash = key.lastIndexOf('/');
+        const path = key.substr(0, lastSlash);
+        const re = new RegExp('^' + path);
+        const filesInPath = fileList.filter(itm => { return re.test(itm.Key); });
+        const sortedFiles = filesInPath.sort((a, b) => { if (a.LastModified > b.LastModified) return -1; return 1 });
+        if (!acc[path]) {
+          acc[path] = sortedFiles[0];
         }
         return acc;
-      }, []);
-
-      return { status: 200, result: documentsList };
+      }, {});
+      return { fileObj: vettedFilesObj };
     } catch (err) {
       return { status: 400, err };
     }
@@ -68,18 +100,31 @@ const s3Manager = {
   }
 };
 
-StorageRouter.get("/", async (req, res) => {
+StorageRouter.use(function (err, req, res, next) {
+  console.log('This is the invalid field ->', err.field)
+  next(err)
+})
+
+const getUploadedDocuments = async (req, res, next) => {
   const result = await s3Manager.getFiles();
-  res.status(result.status).send(result.result || result.err);
-});
+  const fileList = Object.keys(result.fileObj);
+  if (!result.err) {
+    if (res) {
+      res.app.locals.fileList = fileList;
+    } else {
+      return fileList;
+    }
+  } else {
+    console.log(result.err);
+  }
+  next();
+};
 
 const storage = multer.diskStorage({
   destination: (req, file, instructions) => {
-    // console.log("destination", file);
     instructions(null, "uploads");
   },
   filename: (req, file, instructions) => {
-    // console.log("filename", file);
     instructions(null, `${file.originalname}-${Date.now()}`);
   }
 });
@@ -88,7 +133,8 @@ const upload = multer({ storage });
 
 StorageRouter.post(
   "/upload",
-  upload.array("fileList", 12),
+  isValid,
+  upload.any(),
   async (req, res, next) => {
     const { files } = req;
 
@@ -96,19 +142,21 @@ StorageRouter.post(
       return res.status(404).send("no files");
     }
 
+    console.error('files', files);
+
     const fileStreamList = files.reduce((acc, file) => {
       const fileStream = fs.createReadStream(
         path.resolve("uploads", file.filename)
       );
 
-      fileStream.on("error", function(err) {
+      fileStream.on("error", function (err) {
         console.log("File Error", err);
         return acc;
       });
-
+      console.log(`${file.fieldname}${file.filename}`);
       const uploadParams = {
         Bucket: "site-document-collection",
-        Key: file.filename,
+        Key: `${file.fieldname}${file.filename}`,
         Body: fileStream
       };
 
@@ -118,9 +166,10 @@ StorageRouter.post(
     }, []);
 
     const result = await s3Manager.upload(fileStreamList);
+    const allFiles = getUploadedDocuments();
 
-    res.status(200).send(result);
+    res.status(200).send(allFiles);
   }
 );
 
-export default StorageRouter;
+export { StorageRouter as default, getUploadedDocuments };

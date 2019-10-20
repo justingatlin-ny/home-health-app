@@ -10,7 +10,7 @@ import https from 'https';
 
 const app = express();
 
-import StorageRouter from "StorageRouter";
+import StorageRouter, { getUploadedDocuments } from "StorageRouter";
 
 const isDevelopment = (process.env.NODE_ENV === 'development');
 
@@ -20,9 +20,25 @@ app.use(bodyParser.json());
 app.use(express.static(path.resolve("htdocs", "public")));
 app.use("/storage", StorageRouter);
 
-app.get('/.well-known/acme-challenge/yPaavhOICdtU3td4Qo9Y2ZQDkXr_gTuF9dMfLpz-yyA', (req, res) => {
-  console.error('ok');
-  res.sendStatus(200);
+app.use(getUploadedDocuments);
+
+app.engine('jcg', function (filePath, options, callback) { // define the template engine
+  
+  fs.readFile(filePath, function (err, content) {
+    if (err) return callback(err)
+    // this is an extremely simple template engine
+    var rendered = content.toString()
+      .replace('#fileList#', JSON.stringify(options.fileList));
+    return callback(null, rendered)
+  })
+});
+
+app.set('views', './views') // specify the views directory
+app.set('view engine', 'jcg') // register the template engine
+
+app.get('/', (req, res) => {
+  const { fileList } = app.locals;
+  res.render('index', { fileList });
 });
 
 // File not found
