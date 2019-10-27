@@ -6,14 +6,14 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-console.log(`isDevelopment: ${isDevelopment}`);
+console.log(`DOM isDevelopment: ${isDevelopment}`);
 
 module.exports = {
   entry: ["@babel/polyfill", "./src/index.js"],
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules"]
+    ignored: ["node_modules", "htdocs", "logs", "server", "uploads"]
   },
   target: "web",
   module: {

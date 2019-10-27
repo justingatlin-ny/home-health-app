@@ -136,9 +136,7 @@ const upload = multer({ storage });
 
 StorageRouter.post(
   "/upload",
-  cors({
-    allowedHeaders: ['Content-Type', 'Authorization']
-  }),
+  cors(),
   isValid,
   upload.any(),
   async (req, res, next) => {
@@ -172,7 +170,7 @@ StorageRouter.post(
     }, []);
 
     const result = await s3Manager.upload(fileStreamList);
-    const allFiles = getUploadedDocuments();
+    const allFiles = await getUploadedDocuments();
 
     res.status(200).send(allFiles);
   }

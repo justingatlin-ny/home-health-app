@@ -9,10 +9,17 @@ class Form extends React.Component {
       fileList: [],
       uploadStatus: ''
     }
+
+    componentDidMount() {
+      this.setState({ fileList });
+    }
     
     handleSubmit = event => {
         event.preventDefault();
+
+        
         const form = event.target;
+        form.setAttribute('disabled', 'disabled');
         const fileInputList = form.querySelectorAll('[type="file"]');
         const filePaths = {};
         let formData;
@@ -28,6 +35,7 @@ class Form extends React.Component {
 
         if (!formData) {
           this.setState({ uploadStatus: 'No files selected...'})
+          form.removeAttribute('disabled');
           return false;
         }
       
@@ -37,26 +45,21 @@ class Form extends React.Component {
             }
           };
           
-          new Promise((resolve, reject) => {
-            if (true) {
-            const response = axios({
-                method: "POST",
-                url: "/storage/upload",
-                data: formData,
-                header: options.headers
-              })
-                .then(response => response.data)
-                .catch(err => err);
-            resolve(response);
-            } else {
-                reject("Please add files to upload.");
-            }
+          
+        axios({
+            method: "POST",
+            url: "/storage/upload",
+            data: formData,
+            header: options.headers
           })
           .then(res => {
-            console.log('Promise.then()', res);
-            this.setState({ fileList: res });
+            form.removeAttribute('disabled');
+            this.setState({ fileList: res.data });
           })
-          .catch(err => console.log('Promise.catch()', err));
+          .catch(err => {
+            form.removeAttribute('disabled'); 
+            console.log('Promise.catch()', err);
+          });
       };
     
       handleChange = event => {

@@ -3,7 +3,7 @@ const webpack = require("webpack");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-// console.log(`isDevelopment: ${isDevelopment} - WEBPACK_ERRORS: ${process.env.WEBPACK_ERRORS}`);
+console.log(`SERVER isDevelopment: ${isDevelopment}`);
 const envs = require('./utils/manageDotEnv')();
 const plugins = [
   new webpack.DefinePlugin(envs)
@@ -13,7 +13,7 @@ module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules"]
+    ignored: ["node_modules", "htdocs", "logs"]
   },
   entry: ["@babel/polyfill", "./server/index.js"],
   output: {
