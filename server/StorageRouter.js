@@ -16,20 +16,20 @@ import aws_config from "../aws-config";
 import aws_exports from '../src/aws-exports';
 
 const isValid = async (req, res, next) => {
-  const { token } = req.headers;
+  const token = Object.entries(req.cookies).find(entry => {
+    return /accessToken/.test(entry[0]);
+  })[1] || '';
+
   const aws_jwt_url = `https://cognito-idp.${aws_config.region}.amazonaws.com/${aws_exports.Auth.userPoolId}/.well-known/jwks.json`;
 
   try {
     const response = await axios.get(aws_jwt_url);
-    // console.log(response.data.keys);
-    // return res.sendStatus(404);
-    const pem = jwkToPem(response.data.keys[0]);
+    const pem = jwkToPem(response.data.keys[1]);
     jwt.verify(token, pem, { algorithms: ['RS256'] }, function(err, decodedToken) {
       if (err) {
         console.error('err', err);
         return res.sendStatus(403);
       }
-      // const issuer = `https://cognito-idp.us-east-1.amazonaws.com/${aws_exports.Auth.userPoolId}`
       next();
     });
   } catch (error) {
@@ -103,8 +103,6 @@ const s3Manager = {
   }
 };
 
-StorageRouter.options("*", cors());
-
 StorageRouter.use(function (err, req, res, next) {
   console.log('This is the invalid field ->', err.field)
   next(err)
@@ -138,7 +136,9 @@ const upload = multer({ storage });
 
 StorageRouter.post(
   "/upload",
-  cors(),
+  cors({
+    allowedHeaders: ['Content-Type', 'Authorization']
+  }),
   isValid,
   upload.any(),
   async (req, res, next) => {

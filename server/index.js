@@ -15,10 +15,12 @@ import StorageRouter, { getUploadedDocuments } from "StorageRouter";
 const isDevelopment = (process.env.NODE_ENV === 'development');
 
 app.use(helmet());
+app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.resolve("htdocs", "public")));
 app.use("/storage", StorageRouter);
+
 
 app.use(getUploadedDocuments);
 

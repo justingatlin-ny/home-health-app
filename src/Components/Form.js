@@ -30,19 +30,10 @@ class Form extends React.Component {
           this.setState({ uploadStatus: 'No files selected...'})
           return false;
         }
-
-        const isBrowser = (typeof window != 'undefined');
-        
-        const localStorage = isBrowser && window.localStorage || new Map();
-        const storageKeysList = Object.entries(localStorage)
-        const token = storageKeysList.find(entry => {
-          return /accessToken/.test(entry[0]);
-        })[1] || '';
-
+      
         const options = {
             headers: {
-              "Content-Type": "multipart/form-data",
-              'Authorization': `bearer ${token}`
+              "Content-Type": "multipart/form-data"
             }
           };
           
