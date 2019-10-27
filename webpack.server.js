@@ -13,7 +13,7 @@ module.exports = {
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
   watchOptions: {
-    ignored: ["node_modules", "htdocs", "logs", "src"]
+    ignored: ["node_modules"]
   },
   entry: ["@babel/polyfill", "./server/index.js"],
   output: {
@@ -39,9 +39,8 @@ module.exports = {
       path.resolve(__dirname, "server")
     ]
   },
-
-  devtool: "",
+  devtool: isDevelopment ? "source-map" : '',
   target: "node",
-  stats: "normal",
+  stats: "errors-only",
   plugins
 };

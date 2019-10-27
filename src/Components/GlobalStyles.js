@@ -56,6 +56,10 @@ const GlobalStyles = createGlobalStyle`
     .button {
         margin: 25px 0;
     }
+    .button span {
+        margin-left: 25px;
+        color: red;
+    }
     
     fieldset:nth-child(odd) {
         background-color: #ccc;

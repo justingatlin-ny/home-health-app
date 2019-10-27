@@ -17,7 +17,7 @@ const handleItem = (obj) => {
     }
 }
 
-const FileManager = ({ categoryName, document, person, versions, fileList }) => {
+const FileManager = ({ categoryName, document, person, versions, fileList = [] }) => {
     const filePath = `${createDashes(categoryName)}/${createDashes(document)}/${person}/`;
     const isComplete = fileList.includes(filePath.substr(0, filePath.length - 1));
     

@@ -12,9 +12,9 @@ module.exports = {
   entry: ["@babel/polyfill", "./src/index.js"],
   mode: isDevelopment ? "development" : "production",
   watch: isDevelopment,
-  // watchOptions: {
-  //   ignored: ["node_modules", "server", "uploads", "htdocs"]
-  // },
+  watchOptions: {
+    ignored: ["node_modules"]
+  },
   target: "web",
   module: {
     rules: [
@@ -36,8 +36,8 @@ module.exports = {
     publicPath: "./",
     filename: "bundle.js"
   },  
-  stats: "normal",
-  devtool: "",
+  stats: "errors-only",
+  devtool: isDevelopment ? "source-map" : '',
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin(require('./utils/manageDotEnv')())

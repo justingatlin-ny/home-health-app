@@ -7,11 +7,12 @@ module.exports = {
       out_file: "logs/out.log",
       log_file: "/dev/null",
       watch_delay: 1500,
-      // ignore_watch : ["node_modules", "conf", "logs", "examples", "package.json", "document*"],
+      ignore_watch : ["node_modules", "conf", "logs", "examples", "package.json", "document*"],
       instances: 1,
       autorestart: true,
       watch: ['htdocs'],
       max_memory_restart: "1G",
+      source_map_support: true,
       env: {
         NODE_ENV: "development"
       },

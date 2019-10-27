@@ -3,8 +3,9 @@ import path from "path";
 import express from "express";
 import multer from "multer";
 import fs from "fs";
+import cors from 'cors';
 import axios from 'axios';
-import jwk from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
 
 const StorageRouter = express.Router();
@@ -16,25 +17,27 @@ import aws_exports from '../src/aws-exports';
 
 const isValid = async (req, res, next) => {
   const { token } = req.headers;
-  const awsKidsURL = `https://cognito-idp.${aws_config.region}.amazonaws.com/${aws_exports.Auth.userPoolId}/.well-known/jwks.json`;
+  const aws_jwt_url = `https://cognito-idp.${aws_config.region}.amazonaws.com/${aws_exports.Auth.userPoolId}/.well-known/jwks.json`;
 
   try {
-    const response = await axios.get(awsKidsURL);
-    // res.status(200).send(JSON.stringify(response.data));
-      const pem = jwkToPem(jwk);
-      jwt.verify(token, pem, { algorithms: ['RS256'] }, function(err, decodedToken) {
-        if (err) return res.sendStatus(403);
-        const issuer = `https://cognito-idp.us-east-1.amazonaws.com/${aws_exports.Auth.userPoolId}`
-        res.sendStatus(201);
-      });
+    const response = await axios.get(aws_jwt_url);
+    // console.log(response.data.keys);
+    // return res.sendStatus(404);
+    const pem = jwkToPem(response.data.keys[0]);
+    jwt.verify(token, pem, { algorithms: ['RS256'] }, function(err, decodedToken) {
+      if (err) {
+        console.error('err', err);
+        return res.sendStatus(403);
+      }
+      // const issuer = `https://cognito-idp.us-east-1.amazonaws.com/${aws_exports.Auth.userPoolId}`
+      next();
+    });
   } catch (error) {
     console.error(error);
     res.sendStatus(403);
   }
   
 }
-
-
 
 const s3Manager = {
   init: () => {
@@ -100,6 +103,8 @@ const s3Manager = {
   }
 };
 
+StorageRouter.options("*", cors());
+
 StorageRouter.use(function (err, req, res, next) {
   console.log('This is the invalid field ->', err.field)
   next(err)
@@ -133,6 +138,7 @@ const upload = multer({ storage });
 
 StorageRouter.post(
   "/upload",
+  cors(),
   isValid,
   upload.any(),
   async (req, res, next) => {

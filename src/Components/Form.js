@@ -6,7 +6,8 @@ const replaceSpaces = (name) => name.replace(/[\s\/]/g, '-');
 
 class Form extends React.Component {
     state = {
-      fileList: []
+      fileList: [],
+      uploadStatus: ''
     }
     
     handleSubmit = event => {
@@ -14,21 +15,37 @@ class Form extends React.Component {
         const form = event.target;
         const fileInputList = form.querySelectorAll('[type="file"]');
         const filePaths = {};
-        const formData = new FormData();
+        let formData;
         fileInputList.forEach(input => {
           const path = input.getAttribute('data-path');
           const file = input.files && input.files.length ? input.files[0] : null; 
           if (file) {
+            if (!formData) formData = new FormData();
             filePaths[file.name] = path;
             formData.append(path, file, replaceSpaces(file.name));
           }
         });
+
+        if (!formData) {
+          this.setState({ uploadStatus: 'No files selected...'})
+          return false;
+        }
+
+        const isBrowser = (typeof window != 'undefined');
         
+        const localStorage = isBrowser && window.localStorage || new Map();
+        const storageKeysList = Object.entries(localStorage)
+        const token = storageKeysList.find(entry => {
+          return /accessToken/.test(entry[0]);
+        })[1] || '';
+
         const options = {
             headers: {
-              "Content-Type": "multipart/form-data"
+              "Content-Type": "multipart/form-data",
+              'Authorization': `bearer ${token}`
             }
           };
+          
           new Promise((resolve, reject) => {
             if (true) {
             const response = axios({
@@ -53,7 +70,7 @@ class Form extends React.Component {
     
       handleChange = event => {
         const elm = event.target;
-        this.setState({ [elm.name]: elm.value });
+        this.setState({ [elm.name]: elm.value, uploadStatus: '' });
       };
       render() {
           return (
@@ -67,12 +84,14 @@ class Form extends React.Component {
                     </legend>
                     <div className="button">
                       <button>Send</button>
+                      <span>{this.state.uploadStatus}</span>
                     </div>
                     <div className="instructions"><span className="checkmark">&#x2714;</span> = Uploaded and saved</div>
                     <DocumentContainer fileList={this.state.fileList} handleChange={this.handleChange} />
                     
                     <div className="button">
                       <button>Send</button>
+                      <span>{this.state.uploadStatus}</span>
                     </div>
             </form>
           );
