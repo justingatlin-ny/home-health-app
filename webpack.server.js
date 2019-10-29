@@ -39,7 +39,7 @@ module.exports = {
       path.resolve(__dirname, "server")
     ]
   },
-  devtool: isDevelopment ? "source-map" : '',
+  devtool: "source-map",
   target: "node",
   stats: "errors-only",
   plugins

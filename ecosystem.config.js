@@ -30,6 +30,7 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "1G",
+      source_map_support: true,
       env: {
         NODE_ENV: "development"
       },

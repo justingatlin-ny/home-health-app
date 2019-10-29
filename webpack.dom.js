@@ -44,7 +44,7 @@ module.exports = {
     filename: "bundle.js"
   },
   stats: "errors-only",
-  devtool: isDevelopment ? "source-map" : '',
+  devtool: "source-map",
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new CopyWebpackPlugin([
