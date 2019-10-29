@@ -17,6 +17,11 @@ const handleItem = (obj) => {
     }
 }
 
+const handleChange = () => {
+    const divList = document.querySelectorAll('.button span');
+    divList.forEach(div => div.innerHTML='');
+}
+
 const FileManager = ({ categoryName, document, person, versions, fileList = [] }) => {
     const filePath = `${createDashes(categoryName)}/${createDashes(document)}/${person}/`;
     const isComplete = fileList.includes(filePath.substr(0, filePath.length - 1));
@@ -28,25 +33,25 @@ const FileManager = ({ categoryName, document, person, versions, fileList = [] }
         acc.push(
             <div key={key} data-complete={isComplete} className={`filemanager ${person} ${document}`}>
                 {version ? <label htmlFor={`${person}-${document}`}>{version}</label> : null}
-                <input data-path={filePathExtened} type="file" id={`${person}-${document}-${version}`} name={`${categoryName}-${document}-${version}`}></input>
+                <input data-path={filePathExtened} type="file" id={`${person}-${document}-${version}`} name={`${categoryName}-${document}-${version}`} onChange={handleChange}></input>
             </div>
         );
         return acc;
     }, []) : (
                 <div data-complete={isComplete} className={`filemanager ${person} ${document}`}>
-                    <input data-path={filePath} type="file" className="filemanager" id={`${person}-${document}`} name={`${categoryName}-${document}`}></input>
+                    <input data-path={filePath} type="file" className="filemanager" id={`${person}-${document}`} name={`${categoryName}-${document}`} onChange={handleChange}></input>
                 </div>
             );
 }
 
-const PeopleList = ({ document, categoryName, versions, fileList }) => {
+const PeopleList = ({ handleChange, document, categoryName, versions, fileList }) => {
     return requiredDocuments.people.reduce((acc, person, idx) => {
         const key = `person-${idx}-${random()}`;
         const firstVersion = versions ? '-' + versions[0] : '';
         acc.push(
             <div key={key} className={`${person} person`}>
                 <label htmlFor={`${person}-${document}${firstVersion}`}><h4>{person}</h4></label>
-                <FileManager fileList={fileList} versions={versions} person={person} categoryName={categoryName} className={`${createDashes(categoryName)}-${person}`} document={document} />
+                <FileManager fileList={fileList} versions={versions} person={person} categoryName={categoryName} className={`${createDashes(categoryName)}-${person}`} document={document} handleChange={handleChange} />
             </div>
         );
         return acc;
@@ -55,21 +60,21 @@ const PeopleList = ({ document, categoryName, versions, fileList }) => {
 
 
 
-const Document = ({ instructions, document, categoryName, versions, fileList }) => {
+const Document = ({ handleChange, instructions, document, categoryName, versions, fileList }) => {
     return (
         <React.Fragment>
             <h4>{createSpaces(document)}</h4>
             {instructions && <h5 className="instructions">{instructions}</h5> || null}
-            <PeopleList fileList={fileList} document={document} categoryName={categoryName} versions={versions} />
+            <PeopleList fileList={fileList} document={document} categoryName={categoryName} versions={versions} handleChange={handleChange} />
         </React.Fragment>
     );
 }
 
-const DocumentList = ({ categoryName, fileList, docs }) => {
+const DocumentList = ({ handleChange, categoryName, fileList, docs }) => {
     return handleItem(docs) === 'array' && docs.reduce((acc, document, idx) => {
         const key = `section-${idx}-${random()}`;
         acc.push(
-            <Document key={key} fileList={fileList} className={`${createDashes(document)} document`} document={document} categoryName={categoryName} />
+            <Document key={key} fileList={fileList} className={`${createDashes(document)} document`} document={document} categoryName={categoryName} handleChange={handleChange} />
         );
         return acc;
     }, []) || handleItem(docs) === 'object' && Object.entries(docs).reduce((acc, document, idx) => {
@@ -78,7 +83,7 @@ const DocumentList = ({ categoryName, fileList, docs }) => {
         const key = `section-${idx}-${random()}`;
         const versions = handleItem(properties) === 'array' ? properties : null;
         acc.push(
-            <Document fileList={fileList} instructions={properties.instructions} key={key} className={`${createDashes(documentName)} document`} document={documentName} categoryName={categoryName} versions={versions} />
+            <Document fileList={fileList} instructions={properties.instructions} key={key} className={`${createDashes(documentName)} document`} document={documentName} categoryName={categoryName} versions={versions} handleChange={handleChange} />
         );
         return acc;
     }, []) || [];

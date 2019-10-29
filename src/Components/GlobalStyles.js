@@ -1,20 +1,41 @@
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
-    body, div, p, h1, h2, h3, h4 {
+    html, body, div, p, h1, h2, h3, h4 {
         margin: 0;
         padding: 0;        
     }
     body {
+        position: relative
         font-family: monospace, sans-serif;
     }
+
+    .cover {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 100;
+        background-color: #dedede;
+        background-image: url(./images/ajax-loader.gif);
+        background-repeat: no-repeat;
+        background-position: center center;
+        opacity: .80;
+        display: none;
+    }
+
+    [data-working="true"] .cover {
+        display: block;
+    }
+
     label, input {
     }
     label {
         text-transform: capitalize;
     }
     form {
-        margin: 25px;
+        padding: 25px;
     }
     fieldset {
         margin-top: 35px;

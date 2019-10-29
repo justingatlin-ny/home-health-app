@@ -9,6 +9,7 @@ import { hot } from "react-hot-loader";
 import GlobalStyles from './Components/GlobalStyles';
 import Form from './Components/Form';
 
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +20,7 @@ class App extends Component {
     return (
       <div className="App">
         <GlobalStyles />
+        <div className="cover" />
         <Form />
       </div>
     );

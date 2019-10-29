@@ -15,11 +15,15 @@ class Form extends React.Component {
     }
     
     handleSubmit = event => {
+        const formIsWorking = 'data-working';
         event.preventDefault();
 
+        const body = document.body;
         
         const form = event.target;
-        form.setAttribute('disabled', 'disabled');
+
+        if (/true/.test(form.getAttribute(formIsWorking))) return undefined;
+
         const fileInputList = form.querySelectorAll('[type="file"]');
         const filePaths = {};
         let formData;
@@ -35,16 +39,18 @@ class Form extends React.Component {
 
         if (!formData) {
           this.setState({ uploadStatus: 'No files selected...'})
-          form.removeAttribute('disabled');
           return false;
         }
+
+        body.setAttribute('data-working', 'true');
+        form.querySelectorAll('button, input').forEach(itm => itm.setAttribute('disabled', 'disabled'));
+        form.setAttribute(formIsWorking, 'true');
       
         const options = {
             headers: {
               "Content-Type": "multipart/form-data"
             }
           };
-          
           
         axios({
             method: "POST",
@@ -53,13 +59,16 @@ class Form extends React.Component {
             header: options.headers
           })
           .then(res => {
-            form.removeAttribute('disabled');
             this.setState({ fileList: res.data });
           })
           .catch(err => {
-            form.removeAttribute('disabled'); 
             console.log('Promise.catch()', err);
-          });
+          })
+          .finally(() => {
+            form.querySelectorAll('button, input').forEach(itm => itm.removeAttribute('disabled'));
+            form.setAttribute(formIsWorking, 'false');
+            body.setAttribute('data-working', 'false');
+          })
       };
     
       handleChange = event => {

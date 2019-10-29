@@ -57,7 +57,7 @@ const s3Manager = {
 
       const response = await s3
         .listObjectsV2({
-          Bucket: "site-document-collection",
+          Bucket: process.env.AWS_BUCKET,
           Prefix: ""
         })
         .promise();
@@ -88,7 +88,7 @@ const s3Manager = {
       const uploadResult = await uploadParamsList.reduce(
         async (acc, uploadParams) => {
           const result = await s3.upload(uploadParams).promise();
-          console.info("s3Manager.upload", typeof acc, result.Key);
+          // console.info("s3Manager.upload", typeof acc, result.Key);
           acc2.push(result.Key);
           return acc;
         },
@@ -104,7 +104,7 @@ const s3Manager = {
 };
 
 StorageRouter.use(function (err, req, res, next) {
-  console.log('This is the invalid field ->', err.field)
+  console.error('This is the invalid field ->', err.field)
   next(err)
 })
 
@@ -118,7 +118,7 @@ const getUploadedDocuments = async (req, res, next) => {
       return fileList;
     }
   } else {
-    console.log(result.err);
+    console.error(result.err);
   }
   next();
 };
@@ -154,12 +154,12 @@ StorageRouter.post(
       );
 
       fileStream.on("error", function (err) {
-        console.log("File Error", err);
+        console.error("File Error", err);
         return acc;
       });
-      console.log(`${file.fieldname}${file.filename}`);
+      // console.log(`${file.fieldname}${file.filename}`);
       const uploadParams = {
-        Bucket: "site-document-collection",
+        Bucket: process.env.AWS_BUCKET,
         Key: `${file.fieldname}${file.filename}`,
         Body: fileStream
       };
