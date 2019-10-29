@@ -22,7 +22,7 @@ export default {
 
         cookieStorage: {
             // REQUIRED - Cookie domain (only required if cookieStorage is provided)
-                domain: 'localhost',
+                domain: process.env.DOMAIN,
             // OPTIONAL - Cookie path
                 path: '/',
             // OPTIONAL - Cookie expiration in days
