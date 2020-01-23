@@ -51,21 +51,18 @@ app.use("*", (req, res) => {
 let key, cert, ca, credentials = {};
 
 // Certificate
-let cert = path.join(__dirname, 'opt', 'bitnami', 'letsencrypt', 'certificates', 'documents.vikingstamp.com.crt');
-let key = path.join(__dirname, 'opt', 'bitnami', 'letsencrypt', 'certificates', 'documents.vikingstamp.com.key');
-
 if (process.env.NODE_ENV === 'development') {
   cert = path.join('./', 'creds', 'https.crt');
   key = path.join('./', 'creds', 'https.key');
-} 
+} else {
+cert = path.join(__dirname, 'opt', 'bitnami', 'letsencrypt', 'certificates', 'documents.vikingstamp.com.crt');
+key = path.join(__dirname, 'opt', 'bitnami', 'letsencrypt', 'certificates', 'documents.vikingstamp.com.key');
+}
 
 const options = {
   cert: fs.readFileSync(cert),
   key: fs.readFileSync(key)
 }
-
-const httpsCreated = https.createServer(options, app);
-const httpCreated = http.createServer(app);
 
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(options, app);
