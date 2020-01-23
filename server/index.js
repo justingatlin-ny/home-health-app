@@ -51,22 +51,24 @@ app.use("*", (req, res) => {
 let key, cert, ca, credentials = {};
 
 // Certificate
-if (isDevelopment) {
-  key = fs.readFileSync('creds/https.key', 'utf8');
-  cert = fs.readFileSync('creds/https.crt', 'utf8');
-} else {
-  key = fs.readFileSync('creds/privkey.pem', 'utf8');
-  cert = fs.readFileSync('creds/cert.pem', 'utf8');
-  ca = fs.readFileSync('creds/chain.pem', 'utf8');
+let cert = path.join(__dirname, 'opt', 'bitnami', 'letsencrypt', 'certificates', 'superbowl.vikingstamp.com.crt');
+let key = path.join(__dirname, 'opt', 'bitnami', 'letsencrypt', 'certificates', 'superbowl.vikingstamp.com.key');
 
-  credentials.ca = ca;
+if (process.env.NODE_ENV === 'development') {
+  cert = path.join('./', 'creds', 'https.crt');
+  key = path.join('./', 'creds', 'https.key');
+} 
+
+const options = {
+  cert: fs.readFileSync(cert),
+  key: fs.readFileSync(key)
 }
 
-credentials.cert = cert;
-credentials.key = key;
+const httpsCreated = https.createServer(options, app);
+const httpCreated = http.createServer(app);
 
 const httpServer = http.createServer(app);
-const httpsServer = https.createServer(credentials, app);
+const httpsServer = https.createServer(options, app);
 
 const port = process.env.PORT;
 const secureport = process.env.SECURE_PORT;
