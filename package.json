@@ -10,7 +10,7 @@
   "scripts": {
     "start": "NODE_ENV=development concurrently \"webpack --config webpack.dom.js\" \"webpack --config webpack.server.js\"",
     "dev": "pm2 start --only documents-dev --watch --no-daemon",
-    "server": "pm2 start --only documents-prod --no-daemon",
+    "server": "pm2 start --only documents-prod",
     "webpack:dom": "NODE_ENV=development webpack --config webpack.dom.js",
     "webpack:server": "NODE_ENV=development webpack --config webpack.server.js --watch",
     "prod:dom": "NODE_ENV=production webpack --config webpack.dom.js",

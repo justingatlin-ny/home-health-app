@@ -78,7 +78,8 @@ const s3Manager = {
       }, {});
       return { fileObj: vettedFilesObj };
     } catch (err) {
-      return { status: 400, err };
+      console.error(err);
+      return { status: 400, err: 'Check the logs' };
     }
   },
   upload: async uploadParamsList => {
@@ -110,7 +111,8 @@ StorageRouter.use(function (err, req, res, next) {
 
 const getUploadedDocuments = async (req, res, next) => {
   const result = await s3Manager.getFiles();
-  const fileList = Object.keys(result.fileObj);
+  
+  const fileList = Object.keys(result && result.fileObj || {});
   if (!result.err) {
     if (res) {
       res.app.locals.fileList = fileList;
