@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "dev",
+      name: "documents-dev",
       script: "htdocs/server-bundle.js",
       error_file: "logs/err.log",
       out_file: "logs/out.log",
@@ -21,7 +21,7 @@ module.exports = {
       }
     },
     {
-      name: "prod",
+      name: "documents-prod",
       script: "htdocs/server-bundle.js",
       error_file: "logs/err.log",
       out_file: "logs/out.log",
