@@ -3,7 +3,6 @@ const webpack = require("webpack");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 
-console.log(`SERVER isDevelopment: ${isDevelopment}`);
 const envs = require('./utils/manageDotEnv')();
 const plugins = [
   new webpack.DefinePlugin(envs)
