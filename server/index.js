@@ -55,8 +55,9 @@ if (process.env.NODE_ENV === 'development') {
   cert = path.join('./', 'creds', 'https.crt');
   key = path.join('./', 'creds', 'https.key');
 } else {
-cert = path.join(__dirname, 'opt', 'bitnami', 'letsencrypt', 'certificates', 'documents.vikingstamp.com.crt');
-key = path.join(__dirname, 'opt', 'bitnami', 'letsencrypt', 'certificates', 'documents.vikingstamp.com.key');
+  cert = path.join(__dirname, 'etc', 'letsencrypt', 'live', 'vikingstamp.com', 'cert.pem');
+  key = path.join(__dirname, 'etc', 'letsencrypt', 'live', 'vikingstamp.com', 'privkey.pem');
+  
 }
 
 const options = {
